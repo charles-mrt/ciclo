@@ -1,10 +1,10 @@
 # Ciclo — Calendário e Acompanhamento de Protocolos
 
 <p align="center">
-  <img src="assets/logo.png" alt="Ciclo" />
+  <img src="assets/logo.png" alt="Ciclo" width="112" />
 </p>
 
-<h3 align="center">Organize sua rotina. Acompanhe cada etapa. </h3>
+<h3 align="center">Organize sua rotina. Acompanhe cada etapa.</h3>
 
 <p align="center">
   Aplicação web progressiva para organizar ciclos de atividades diárias, acompanhar o progresso e manter seus registros diretamente no dispositivo.
@@ -49,13 +49,14 @@ Construído com tecnologias nativas da web, o projeto prioriza uma interface sim
 
 ## Roadmap
 
-As funcionalidades abaixo representam possibilidades de evolução do projeto, não recursos já disponíveis.
+Confira as próximas melhorias planejadas para o Ciclo:
 
-- [ ] **Ciclos configuráveis** — permitir diferentes durações, intervalos e frequências.
-- [ ] **Registro de quantidades** — adicionar campos para valores, medidas e dosagens registradas pelo usuário.
-- [ ] **Diário de acompanhamento** — registrar observações e informações específicas de cada dia.
-- [ ] **Backup e restauração** — exportar e importar os dados para facilitar a recuperação dos registros.
-- [ ] **Lembretes locais** — oferecer notificações para auxiliar na organização da rotina.
+- [ ] **Duração configurável** — permitir escolher quantos dias terá cada novo ciclo, em vez de utilizar sempre a duração padrão de 29 dias.
+- [ ] **Dados personalizados por ciclo** — permitir cadastrar informações específicas ao criar um ciclo, como nome, descrição e outras configurações.
+- [ ] **Registro de quantidades** — adicionar campos para registrar valores, medidas e dosagens por dia.
+- [ ] **Diário de acompanhamento** — incluir observações e anotações individuais para cada dia.
+- [ ] **Backup e restauração** — permitir exportar e importar os registros para facilitar a recuperação dos dados.
+- [ ] **Lembretes locais** — adicionar notificações para auxiliar no acompanhamento da rotina.
 
 ## Tecnologias
 
@@ -107,8 +108,9 @@ ciclo/
 
 ### Pré-requisitos
 
-- Git
-- Python 3 ou outro servidor HTTP estático
+- [Git](https://git-scm.com/)
+- [Visual Studio Code](https://code.visualstudio.com/)
+- Extensão [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
 
 ### 1. Clonar o repositório
 
@@ -117,19 +119,29 @@ git clone https://github.com/charles-mrt/ciclo.git
 cd ciclo
 ```
 
-### 2. Iniciar o servidor local
+### 2. Abrir o projeto no VS Code
 
 ```bash
-python3 -m http.server 5555
+code .
 ```
 
-### 3. Abrir a aplicação
+### 3. Iniciar o Live Server
 
-Acesse no navegador:
+1. Abra `src/ciclo.html` no VS Code.
+2. Clique com o botão direito no editor.
+3. Selecione **Open with Live Server**.
 
-<http://localhost:5555/src/ciclo.html>
+O navegador abrirá a aplicação automaticamente.
 
-> A execução por HTTP é recomendada porque os módulos JavaScript e o Service Worker dependem de um contexto de execução adequado.
+Para acessá-la manualmente, utilize o endereço exibido pelo Live Server, normalmente:
+
+```text
+http://127.0.0.1:5500/src/ciclo.html
+```
+
+A porta pode variar conforme a configuração da extensão.
+
+> **Acesso por outros dispositivos:** para abrir o aplicativo em um tablet ou celular conectado à mesma rede, configure o Live Server para escutar em `0.0.0.0` e utilize o endereço IP local do computador no dispositivo móvel.
 
 ## Instalação e uso offline
 
