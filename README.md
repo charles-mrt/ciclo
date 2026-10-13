@@ -1,7 +1,7 @@
 # Ciclo — Calendário e Acompanhamento de Protocolos
 
 <p align="center">
-  <img src="assets/logo.png" alt="Ciclo" width="112" />
+  <img src="assets/logo.png" alt="Ciclo" width="412" />
 </p>
 
 <h3 align="center">Organize sua rotina. Acompanhe cada etapa.</h3>
