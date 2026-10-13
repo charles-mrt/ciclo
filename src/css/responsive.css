@@ -1,0 +1,67 @@
+/* Tablets */
+@media (max-width: 768px) {
+  .logo {
+    width: 120px;
+  }
+}
+
+/* Celulares */
+@media (max-width: 480px) {
+  .logo {
+    width: 100px;
+  }
+}
+@media (max-width: 1050px) {
+  .calendar-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); grid-auto-rows: minmax(125px, 1fr); }
+  .day { min-height: 125px; }
+  .day-name { display: none; }
+  .item-line { font-size: 10px; }
+  .items { padding: 0 6px 6px; gap: 5px; }
+  .day-head { padding: 7px 5px 5px; }
+  .day-status { padding: 4px 6px 6px; }
+}
+
+@media (max-width: 700px) {
+  .topbar { padding: 12px 14px; }
+  .brand { font-size: 17px; }
+  .top-actions .btn .btn-label { display: none; }
+  .top-actions .btn { width: 39px; padding: 0; }
+  #startCycleBtn { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .main { padding: 14px 10px; gap: 13px; }
+  .heading-row { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .month-controls { width: 100%; }
+  .month-controls .month-label { flex: 1; text-align: center; }
+  .progress-wrap { padding: 10px; gap: 9px; }
+  .progress-track { max-width: none; }
+  .calendar-shell { border-radius: 10px; overflow: hidden; }
+  .weekdays { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .weekday { padding: 8px 0; text-align: center; font-size: 9px; letter-spacing: 0; }
+  .calendar-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: auto; }
+  .day { min-height: 148px; border-right: 1px solid var(--line) !important; border-bottom: 1px solid var(--line) !important; }
+  .day:nth-child(3n) { border-right: 0 !important; }
+  .day:nth-last-child(-n+3) { border-bottom: 0 !important; }
+  .day-name { display: inline; font-size: 9px; }
+  .day-head { padding: 7px 6px 5px; }
+  .day-num { min-width: 23px; height: 23px; font-size: 12px; }
+  .day-menu { width: 25px; height: 25px; }
+  .items { padding: 0 7px 7px; gap: 6px; }
+  .item-line { font-size: 10px; }
+  .day-status { font-size: 9px; }
+  .fullscreen-mode .calendar-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: auto; }
+  .fullscreen-mode .day { min-height: 130px; }
+  .fullscreen-mode .day-name { display: inline; }
+  .fullscreen-mode .item-line { font-size: 10px; }
+  .footer-note { font-size: 10px; }
+  .dialog-head { padding: 17px 17px 13px; }
+  .dialog-body { padding: 15px 17px 18px; }
+}
+
+@media (max-width: 390px) {
+  .calendar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .day:nth-child(3n) { border-right: 1px solid var(--line) !important; }
+  .day:nth-child(2n) { border-right: 0 !important; }
+  .day:nth-last-child(-n+3) { border-bottom: 1px solid var(--line) !important; }
+  .day:nth-last-child(-n+2) { border-bottom: 0 !important; }
+  .weekday { font-size: 8px; }
+  .field-grid { grid-template-columns: 1fr; }
+  .progress-label { font-size: 11px; }

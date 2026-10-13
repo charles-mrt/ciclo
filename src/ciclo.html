@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F7F6FC">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ciclo">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Ciclo — Calendário de rotina</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="../assets/icons/pwa/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="../assets/icons/pwa/icon-192.png">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="brand">
+      <img src="../assets/logo.png" alt="Ciclo" class="logo" />
+    </div>
+
+    <div class="top-actions">
+      <button class="btn primary" id="startCycleBtn" title="Iniciar ciclo">
+        <img src="../assets/icons/calendar-clock.svg" alt="" class="btn-icon">
+        <span class="btn-label">Iniciar ciclo</span>
+      </button>
+
+      <button class="btn" id="restoreDatabaseBtn" title="Restaurar banco de dados">
+        <img src="../assets/icons/database-restore.svg" alt="" class="btn-icon">
+        <span class="btn-label">Restaurar dados</span>
+      </button>
+
+      <button class="btn" id="templateBtn" title="Configurar itens padrão">
+        <img src="../assets/icons/calendar-cog.svg" alt="" class="btn-icon">
+        <span class="btn-label">Itens padrão</span>
+      </button>
+
+      <button class="btn icon-only" id="fullscreenBtn" title="Ativar tela cheia" aria-label="Ativar tela cheia">
+        <img src="../assets/icons/maximize.svg" alt="" class="btn-icon" id="fullscreenIcon">
+      </button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="heading-row">
+      <div>
+        <div class="eyebrow">Seu ciclo, dia após dia</div>
+        <h1 class="month-title" id="monthTitle">Carregando calendário…</h1>
+      </div>
+
+      <div class="month-controls">
+        <button class="btn icon-only" id="prevMonth" aria-label="Mês anterior" title="Mês anterior">
+          <img src="../assets/icons/chevron-left.svg" alt="" class="btn-icon">
+        </button>
+        <button class="btn month-label" id="currentMonth">Hoje</button>
+        <button class="btn icon-only" id="nextMonth" aria-label="Próximo mês" title="Próximo mês">
+          <img src="../assets/icons/chevron-right.svg" alt="" class="btn-icon">
+        </button>
+      </div>
+    </section>
+
+    <section class="progress-wrap" aria-label="Progresso do mês">
+      <div class="progress-label">
+        <strong id="progressCount">0 dias concluídos</strong>
+        <span id="progressSub"> · 0 dias contabilizados</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Percentual de dias concluídos" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-percent" id="progressPercent">0%</div>
+    </section>
+
+    <section class="calendar-shell" aria-label="Calendário mensal">
+      <div class="weekdays" aria-hidden="true">
+        <div class="weekday">Dom</div><div class="weekday">Seg</div><div class="weekday">Ter</div>
+        <div class="weekday">Qua</div><div class="weekday">Qui</div><div class="weekday">Sex</div><div class="weekday">Sáb</div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid">
+        <div class="loading">Preparando seus dias…</div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      <span class="save-state"><span class="save-dot"></span><span id="saveStatus">Salvo neste dispositivo</span></span>
+      <span>Toque em um dia para marcar ou desmarcar a conclusão.</span>
+    </div>
+  </main>
+</div>
+
+<div class="overlay" id="editorOverlay" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+  <div class="dialog">
+    <div class="dialog-head">
+      <div>
+        <h2 id="editorTitle">Editar itens</h2>
+        <p id="editorSubtitle">Os itens deste dia serão guardados no histórico.</p>
+      </div>
+      <button class="close-btn" type="button" data-close="editorOverlay" aria-label="Fechar">
+        <img src="../assets/icons/close.svg" alt="" class="ui-icon">
+      </button>
+    </div>
+    <form class="dialog-body" id="editorForm">
+      <div id="editorFields"></div>
+      <div class="dialog-actions">
+        <button type="button" class="btn" id="resetToTemplate">Usar padrão</button>
+        <div class="dialog-actions-right">
+          <button type="button" class="btn" data-close="editorOverlay">Cancelar</button>
+          <button type="submit" class="btn primary">Salvar itens</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="overlay" id="templateOverlay" role="dialog" aria-modal="true" aria-labelledby="templateTitle">
+  <div class="dialog">
+    <div class="dialog-head">
+      <div>
+        <h2 id="templateTitle">Itens padrão</h2>
+        <p>Use este modelo para criar os registros dos próximos dias. O histórico existente não será alterado.</p>
+      </div>
+      <button class="close-btn" type="button" data-close="templateOverlay" aria-label="Fechar">
+        <img src="../assets/icons/close.svg" alt="" class="ui-icon">
+      </button>
+    </div>
+    <form class="dialog-body" id="templateForm">
+      <div id="templateFields"></div>
+      <div class="dialog-actions">
+        <span style="font-size:11px;color:var(--muted)">Aplicado somente a datas ainda sem registro.</span>
+        <div class="dialog-actions-right">
+          <button type="button" class="btn" data-close="templateOverlay">Cancelar</button>
+          <button type="submit" class="btn primary">Salvar padrão</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="overlay" id="restoreDatabaseOverlay" role="dialog" aria-modal="true" aria-labelledby="restoreDatabaseTitle">
+  <div class="dialog">
+    <div class="dialog-head">
+      <div>
+        <h2 id="restoreDatabaseTitle">Restaurar banco de dados?</h2>
+        <p>Esta ação removerá os dados salvos neste calendário.</p>
+      </div>
+      <button class="close-btn" type="button" data-close="restoreDatabaseOverlay" aria-label="Fechar">
+        <img src="../assets/icons/close.svg" alt="" class="ui-icon">
+      </button>
+    </div>
+
+    <div class="dialog-body">
+      <div style="display:flex;gap:12px;padding:14px;border:1px solid #F5C6CB;border-radius:10px;background:var(--danger-soft);margin-bottom:16px">
+        <img src="../assets/icons/triangle-alert.svg" alt="" class="ui-icon" style="width:22px;height:22px;flex-shrink:0;filter:invert(43%) sepia(40%) saturate(1220%) hue-rotate(308deg) brightness(90%)">
+        <div>
+          <strong style="font-size:13px;color:var(--danger)">Esta ação não pode ser desfeita.</strong>
+          <p style="font-size:12px;line-height:1.5;margin:5px 0 0;color:var(--ink)">
+            Todos os registros diários, incluindo conclusões e itens personalizados, serão apagados.
+            Os itens padrão voltarão à configuração inicial.
+          </p>
+        </div>
+      </div>
+
+      <label style="display:flex;align-items:flex-start;gap:9px;font-size:12px;line-height:1.5;color:var(--ink)">
+        <input type="checkbox" id="confirmRestoreDatabase" style="margin-top:2px;accent-color:var(--danger)">
+        Entendo que todos os dados do calendário serão excluídos.
+      </label>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close="restoreDatabaseOverlay">Cancelar</button>
+        <button type="button" class="btn" id="confirmRestoreDatabaseBtn" disabled
+          style="background:var(--danger);border-color:var(--danger);color:#fff;opacity:.55;cursor:not-allowed">
+          Restaurar banco
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="startCycleOverlay" role="dialog" aria-modal="true" aria-labelledby="startCycleTitle">
+  <div class="dialog">
+    <div class="dialog-head">
+      <div>
+        <h2 id="startCycleTitle">Iniciar ciclo</h2>
+        <p>Escolha a data do primeiro dia para preencher o calendário.</p>
+      </div>
+      <button class="close-btn" type="button" data-close="startCycleOverlay" aria-label="Fechar">
+        <img src="../assets/icons/close.svg" alt="" class="ui-icon">
+      </button>
+    </div>
+
+    <form class="dialog-body" id="startCycleForm">
+      <div class="cycle-dialog-note">
+        O ciclo contém <strong>29 dias consecutivos</strong>.
+        Os itens serão preenchidos conforme a sequência configurada.
+        Registros existentes só serão substituídos após sua confirmação.
+      </div>
+
+      <div class="field">
+        <label for="cycleStartDate">Data inicial</label>
+        <input type="date" id="cycleStartDate" name="cycleStartDate" required>
+        <small>O primeiro dia receberá a marca “Início” e o 29º dia receberá “Fim”.</small>
+      </div>
+
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close="startCycleOverlay">Cancelar</button>
+        <div class="dialog-actions-right">
+          <button type="submit" class="btn primary" id="confirmStartCycleBtn">Preencher calendário</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!--
+  PWA / ES Modules: sirva a pasta raiz do projeto via HTTP
+  (ex.: python3 -m http.server) e abra /src/ciclo.html.
+  Não use file:// — o service worker (../sw.js) e os assets
+  precisam do mesmo origin.
+-->
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
