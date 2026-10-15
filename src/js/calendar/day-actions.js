@@ -9,6 +9,30 @@ import { getUserFacingErrorMessage } from '../shared/errors.js'
 import { showToast } from '../shared/ui/toast.js'
 import { renderCalendar } from './render.js'
 
+
+export async function markDayAsNotCompleted(dateKey) {
+  if (!isValidDateKey(dateKey)) return
+
+  if (isFutureDateKey(dateKey)) {
+    showToast('Não é possível marcar um dia futuro como não realizado.')
+    return
+  }
+
+  try {
+    await updateDayRecord(dateKey, record => {
+      record.notCompleted = !record.notCompleted
+      record.completed = false
+
+      return record
+    })
+
+    await renderCalendar()
+  } catch (error) {
+    showToast(getUserFacingErrorMessage('Erro ao alterar o status do dia', error))
+  }
+}
+
+
 export async function toggleDayCompletion(dateKey) {
   if (!isValidDateKey(dateKey)) return
 
@@ -20,6 +44,8 @@ export async function toggleDayCompletion(dateKey) {
   try {
     await updateDayRecord(dateKey, record => {
       record.completed = !record.completed
+      record.notCompleted = false
+
       return record
     })
 
@@ -29,22 +55,27 @@ export async function toggleDayCompletion(dateKey) {
   }
 }
 
+
 export async function clearDayCompletion(dateKey) {
+  if (!isValidDateKey(dateKey)) return
+
   if (isFutureDateKey(dateKey)) {
-    showToast('Não é possível alterar a conclusão de um dia futuro.')
+    showToast('Não é possível alterar o status de um dia futuro.')
     return
   }
 
   try {
     await updateDayRecord(dateKey, record => {
       record.completed = false
+      record.notCompleted = false
+
       return record
     })
 
     await renderCalendar()
-    showToast('Conclusão limpa.')
+    showToast('Status do dia limpo.')
   } catch (error) {
-    showToast(getUserFacingErrorMessage('Erro ao limpar a conclusão', error))
+    showToast(getUserFacingErrorMessage('Erro ao limpar o status do dia', error))
   }
 }
 
