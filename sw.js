@@ -118,34 +118,87 @@ function shouldHandleFetch(request) {
 }
 
 async function respondFromCacheOrNetwork(request) {
-  const cachedResponse = await caches.match(request, { ignoreSearch: true })
+  const cache = await caches.open(CACHE_NAME)
+  const isAppCode =
+    request.mode === 'navigate' ||
+    ['script', 'style'].includes(request.destination)
 
-  if (cachedResponse) {
-    return cachedResponse
-  }
+  if (isAppCode) {
+    try {
+      const networkResponse = await fetch(request)
 
-  try {
-    const networkResponse = await fetch(request)
+      if (networkResponse.ok) {
+        await cache.put(request, networkResponse.clone())
+      }
 
-    // Em navegação sem cache, tenta o shell do app.
-    if (!networkResponse.ok && request.mode === 'navigate') {
-      const shell = await caches.match(APP_SHELL_ABSOLUTE, { ignoreSearch: true })
-      if (shell) return shell
+      if (networkResponse.ok || networkResponse.status < 500) {
+        return networkResponse
+      }
+    } catch (error) {
+      console.warn(
+        '[ciclo-sw] Rede indisponível; usando cache:',
+        request.url
+      )
     }
 
-    return networkResponse
-  } catch (error) {
+    const cachedResponse = await caches.match(request, {
+      ignoreSearch: true
+    })
+
+    if (cachedResponse) return cachedResponse
+
     if (request.mode === 'navigate') {
-      const shell = await caches.match(APP_SHELL_ABSOLUTE, { ignoreSearch: true })
+      const shell = await caches.match(APP_SHELL_ABSOLUTE)
       if (shell) return shell
     }
 
-    const fallback = await caches.match(request, { ignoreSearch: true })
-    if (fallback) return fallback
-
-    throw error
+    throw new Error(`Recurso indisponível: ${request.url}`)
   }
+
+  const cachedResponse = await caches.match(request, {
+    ignoreSearch: true
+  })
+
+  if (cachedResponse) return cachedResponse
+
+  const networkResponse = await fetch(request)
+
+  if (networkResponse.ok) {
+    await cache.put(request, networkResponse.clone())
+  }
+
+  return networkResponse
 }
+
+// async function respondFromCacheOrNetwork(request) {
+//   const cachedResponse = await caches.match(request, { ignoreSearch: true })
+
+//   if (cachedResponse) {
+//     return cachedResponse
+//   }
+
+//   try {
+//     const networkResponse = await fetch(request)
+
+//     // Em navegação sem cache, tenta o shell do app.
+//     if (!networkResponse.ok && request.mode === 'navigate') {
+//       const shell = await caches.match(APP_SHELL_ABSOLUTE, { ignoreSearch: true })
+//       if (shell) return shell
+//     }
+
+//     return networkResponse
+//   } catch (error) {
+//     if (request.mode === 'navigate') {
+//       const shell = await caches.match(APP_SHELL_ABSOLUTE, { ignoreSearch: true })
+//       if (shell) return shell
+//     }
+
+//     const fallback = await caches.match(request, { ignoreSearch: true })
+//     if (fallback) return fallback
+
+//     throw error
+//   }
+// }
 
 self.addEventListener('install', event => {
   event.waitUntil(
