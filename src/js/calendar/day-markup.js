@@ -28,6 +28,7 @@ export function renderDayMarkup(dayRecord) {
   const todayDateKey = getTodayDateKey()
   const isToday = dateKey === todayDateKey
   const isCompleted = Boolean(dayRecord.completed)
+  const isNotCompleted = Boolean(dayRecord.notCompleted)
   const isFuture = dateKey > todayDateKey
   const dayItems = Array.isArray(dayRecord.items) ? dayRecord.items : getItemsTemplate()
 
@@ -37,12 +38,12 @@ export function renderDayMarkup(dayRecord) {
     isCycleEnd
   } = getCycleDayFlags(getCycleStartDateKey(), dateKey)
 
-  return `<div class="day ${isToday ? 'today' : ''} ${isCompleted ? 'completed' : ''} ${isFuture ? 'future' : ''} ${isOutsideCycle ? 'outside-cycle' : ''}"
+  return `<div class="day ${isToday ? 'today' : ''} ${isCompleted ? 'completed' : ''} ${isNotCompleted ? 'not-completed' : ''}  ${isFuture ? 'future' : ''} ${isOutsideCycle ? 'outside-cycle' : ''}"
     data-date="${dateKey}"
     role="button"
     tabindex="${isFuture ? '-1' : '0'}"
     aria-disabled="${isFuture ? 'true' : 'false'}"
-    aria-label="${date.toLocaleDateString('pt-BR', { dateStyle: 'full' })}${isFuture ? ', dia futuro, não disponível para conclusão' : isCompleted ? ', concluído' : ', não concluído'}"
+    aria-label="${date.toLocaleDateString('pt-BR', { dateStyle: 'full' })}${isFuture ? ', dia futuro, indisponível' : isCompleted ? ', concluído' : isNotCompleted ? ', não realizado' : ', não marcado'}"
     aria-pressed="${isCompleted}">
     <div class="day-head">
       <div class="day-date">
@@ -52,9 +53,14 @@ export function renderDayMarkup(dayRecord) {
         ${isCycleStart ? '<span class="cycle-badge start">Início</span>' : ''}
         ${isCycleEnd ? '<span class="cycle-badge end">Fim</span>' : ''}
       </div>
-      <button class="day-menu" data-menu="${dateKey}" aria-label="Ações para ${date.toLocaleDateString('pt-BR')}" aria-expanded="false">
-        ${renderIconMarkup('dots')}
-      </button>
+     <button
+  class="day-menu"
+  data-menu="${dateKey}"
+  aria-label="Ações para ${date.toLocaleDateString('pt-BR')}"
+  aria-expanded="false"
+>
+  ${renderIconMarkup('ellipsisVertical')}
+</button>
     </div>
 
     <div class="items">
@@ -64,15 +70,44 @@ export function renderDayMarkup(dayRecord) {
     </div>
 
     <div class="day-status">
-      ${isCompleted ? renderIconMarkup('check') : '<span class="status-empty" aria-hidden="true"></span>'}
-      <span>${isCompleted ? 'Concluído' : isFuture ? 'Dia futuro' : 'Não marcado'}</span>
+      ${
+        isCompleted
+          ? renderIconMarkup('completed')
+          : isNotCompleted
+            ? renderIconMarkup('notCompleted')
+            : '<span class="status-empty" aria-hidden="true"></span>'
+      }
+      <span>${
+        isCompleted
+          ? 'Concluído'
+          : isNotCompleted
+            ? 'Não realizado'
+            : isFuture
+              ? 'Dia futuro'
+              : 'Não marcado'
+      }</span>
     </div>
 
     <div class="menu-pop" data-pop="${dateKey}" role="menu">
-      <button data-action="edit" data-date="${dateKey}" role="menuitem">${renderIconMarkup('edit')}Editar itens do dia</button>
-      <button data-action="toggle" data-date="${dateKey}" role="menuitem" ${isFuture ? 'disabled aria-disabled="true" title="Não é possível concluir um dia futuro"' : ''}>${renderIconMarkup('check')}${isCompleted ? 'Desmarcar conclusão' : 'Marcar como concluído'}</button>
-      <button data-action="copy" data-date="${dateKey}" role="menuitem">${renderIconMarkup('copy')}Copiar itens de outro dia</button>
-      <button data-action="clear" data-date="${dateKey}" role="menuitem" class="danger" ${isFuture ? 'disabled aria-disabled="true" title="Não é possível alterar a conclusão de um dia futuro"' : ''}>${renderIconMarkup('clear')}Limpar conclusão</button>
+      <button data-action="edit" data-date="${dateKey}" role="menuitem">
+        ${renderIconMarkup('edit')}Editar itens do dia
+      </button>
+      
+      <button data-action="toggle" data-date="${dateKey}" role="menuitem" ${isFuture ? 'disabled aria-disabled="true" title="Não é possível concluir um dia futuro"' : ''}>
+        ${renderIconMarkup('completed')}${isCompleted ? 'Desmarcar conclusão' : 'Marcar como concluído'}
+      </button>
+      
+      <button data-action="mark-not-completed" data-date="${dateKey}" role="menuitem" ${isFuture ? 'disabled aria-disabled="true" title="Não é possível alterar um dia futuro"' : ''}>
+        ${renderIconMarkup('notCompleted')}${isNotCompleted ? 'Desmarcar como não realizado' : 'Marcar como não realizado'}
+      </button>
+      
+      <button data-action="copy" data-date="${dateKey}" role="menuitem">${renderIconMarkup('copy')}
+        Copiar itens de outro dia
+      </button>
+      
+      <button data-action="clear" data-date="${dateKey}" role="menuitem" class="danger" ${isFuture ? 'disabled aria-disabled="true" title="Não é possível alterar a conclusão de um dia futuro"' : ''}>
+       ${renderIconMarkup('clear')}Limpar conclusão
+      </button>
     </div>
   </div>`
 }
