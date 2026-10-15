@@ -1,11 +1,17 @@
 /**
- * Registra o service worker na raiz do projeto (../../../sw.js),
- * cobrindo src/ e assets/ sem exigir cabeçalho Service-Worker-Allowed.
+ * Registra o Service Worker na raiz do projeto para a versão publicada.
+ * Durante o desenvolvimento com Live Server, evita interferência do cache.
  *
  * Caminho relativo a este arquivo: src/js/pwa/ → ../../../sw.js
  */
 export function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) {
+    return Promise.resolve(null)
+  }
+
+  // O Live Server usa JavaScript nativo, sem import.meta.env do Vite.
+  // Controle o ambiente por uma configuração explícita no HTML.
+  if (document.documentElement.dataset.environment === 'development') {
     return Promise.resolve(null)
   }
 
@@ -17,6 +23,7 @@ export function registerServiceWorker() {
     .then(registration => {
       registration.addEventListener('updatefound', () => {
         const installingWorker = registration.installing
+
         if (!installingWorker) return
 
         installingWorker.addEventListener('statechange', () => {
@@ -24,7 +31,9 @@ export function registerServiceWorker() {
             installingWorker.state === 'installed' &&
             navigator.serviceWorker.controller
           ) {
-            console.info('[ciclo] Nova versão disponível. Recarregue para atualizar.')
+            console.info(
+              '[ciclo] Nova versão disponível. Recarregue para atualizar.'
+            )
           }
         })
       })
@@ -32,7 +41,11 @@ export function registerServiceWorker() {
       return registration
     })
     .catch(error => {
-      console.warn('[ciclo] Não foi possível registrar o service worker:', error)
+      console.warn(
+        '[ciclo] Não foi possível registrar o Service Worker:',
+        error
+      )
+
       return null
     })
 }
