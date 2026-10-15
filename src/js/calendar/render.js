@@ -22,7 +22,10 @@ export async function renderCalendar() {
     const daysInMonth = new Date(year, monthIndex + 1, 0).getDate()
     const firstWeekdayOffset = new Date(year, monthIndex, 1).getDay()
     const monthRecords = await getMonthDayRecords(year, monthIndex)
-
+console.log(
+  '[ciclo] Registros não realizados:',
+  [...monthRecords.values()].filter(record => record.notCompleted)
+)
     if (activeRenderToken !== calendarRenderToken) return
 
     const dayMarkupFragments = []
@@ -36,6 +39,7 @@ export async function renderCalendar() {
       const dayRecord = monthRecords.get(dateKey) || {
         date: dateKey,
         completed: false,
+        notCompleted: false,
         items: deepClone(getItemsTemplate()),
         updatedAt: null
       }
