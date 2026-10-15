@@ -38,7 +38,7 @@ Construído com tecnologias nativas da web, o projeto prioriza uma interface sim
 | Recurso | Descrição |
 | --- | --- |
 | **Ciclo de 29 dias** | Preenchimento automático do calendário a partir de uma data inicial. |
-| **Acompanhamento diário** | Marcação dos dias concluídos e atualização do progresso. |
+| **Acompanhamento diário** | Marcação dos dias como concluídos ou não realizados, com identificação dos dias pendentes e atualização dos indicadores de progresso. |
 | **Indicadores de progresso** | Visualização do total concluído e do percentual de conclusão. |
 | **Edição de dias** | Personalização dos itens de cada dia. |
 | **Modelo padrão** | Configuração de uma sequência reutilizável para novos ciclos. |
