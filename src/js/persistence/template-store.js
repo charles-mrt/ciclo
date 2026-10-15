@@ -57,6 +57,7 @@ export function createDefaultDayRecord(dateKey) {
   return {
     date: dateKey,
     completed: false,
+    notCompleted: false,
     items: deepClone(itemsTemplate),
     updatedAt: new Date().toISOString()
   }
