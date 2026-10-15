@@ -1,10 +1,14 @@
 import { openDayEditor } from '../day-editor/day-editor.js'
 import { getElement } from '../shared/dom.js'
-import { closeDayMenus } from '../shared/ui/menus.js'
+import {
+  closeDayMenus,
+  toggleDayMenu
+} from '../shared/ui/menus.js'
 import {
   clearDayCompletion,
   promptCopyItemsFromDay,
-  toggleDayCompletion
+  toggleDayCompletion,
+  markDayAsNotCompleted
 } from './day-actions.js'
 import { renderCalendar } from './render.js'
 import {
@@ -58,19 +62,9 @@ export function bindCalendarEvents() {
 
     if (menuButton) {
       event.stopPropagation()
-
-      const dateKey = menuButton.getAttribute('data-menu')
-      const menuPopup = document.querySelector(`[data-pop="${dateKey}"]`)
-      const wasMenuOpen = menuPopup.classList.contains('open')
-
-      closeDayMenus()
-
-      if (!wasMenuOpen) {
-        menuPopup.classList.add('open')
-        menuButton.setAttribute('aria-expanded', 'true')
-      }
-
+      toggleDayMenu(menuButton)
       return
+
     }
 
     const actionButton = event.target.closest('[data-action]')
@@ -86,6 +80,7 @@ export function bindCalendarEvents() {
       const dateKey = actionButton.getAttribute('data-date')
 
       if (actionName === 'toggle') toggleDayCompletion(dateKey)
+      else if (actionName === 'mark-not-completed') markDayAsNotCompleted(dateKey)
       else if (actionName === 'edit') openDayEditor(dateKey)
       else if (actionName === 'copy') promptCopyItemsFromDay(dateKey)
       else if (actionName === 'clear') clearDayCompletion(dateKey)
