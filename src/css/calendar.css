@@ -55,6 +55,29 @@
 .day.completed { background: var(--success-soft); }
 .day.completed .day-num { background: var(--success); color: #FFF; }
 
+.day.completed {
+  background: var(--success-soft);
+}
+
+.day.completed .day-num {
+  background: var(--success);
+  color: #FFF;
+}
+
+.day.not-completed {
+  background: #FFF1F2;
+}
+
+.day.not-completed .day-num {
+  background: #E11D48;
+  color: #FFF;
+}
+
+.day.not-completed .day-status {
+  color: #BE123C;
+  font-weight: 750;
+}
+
 .day-head {
   display: flex;
   align-items: center;
@@ -90,11 +113,10 @@
   background: transparent;
   color: var(--muted);
   flex-shrink: 0;
-  z-index: 2;
 }
 
 .day-menu:hover, .day-menu[aria-expanded="true"] { background: #E4DCFF; color: var(--accent-hover); }
-.day-menu .ui-icon { width: 16px; height: 16px; }
+.day-menu .ui-icon { width: 16px; height: 16px;}
 
 .items {
   padding: 0 9px 8px;
