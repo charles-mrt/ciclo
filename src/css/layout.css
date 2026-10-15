@@ -110,7 +110,24 @@
   text-align: right;
   color: var(--accent);
 }
-.footer-note { font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.footer-note { 
+  font-size: 11px; 
+  color: var(--muted); 
+  display: flex; 
+  justify-content: 
+  space-between; gap: 12px; 
+  flex-wrap: wrap;
+ }
+ .footer-note div {
+  display: flex;
+  justify-items: center;
+  gap:10px;
+ }
+ .app-version{
+  color:var(--muted);
+  text-transform: capitalize;
+
+}
 .save-state { display: inline-flex; align-items: center; gap: 6px; }
 .save-dot { width: 6px; height: 6px; background: var(--success); border-radius: 50%; }
 .fullscreen-mode .topbar { display: none; }
